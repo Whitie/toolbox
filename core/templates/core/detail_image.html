@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}{% load i18n %}
+
+{% block nav %}{% include 'core/nav.inc.html' %}{% endblock %}
+
+{% block body %}{% translate "File" as tr_file %}
+<div class="container">
+    <div class="row">
+        <div class="column">
+            <h3>{{ file.name }} ({{ file.get_type_display }})</h3>
+            <dl>
+                <dt>{% translate 'Folder' %}</dt>
+                <dd>{% if file.folder %}{{ file.folder.name }} ({% translate 'Public' %}: {{ file.folder.public|yesno }}){% else %}-{% endif %}</dd>
+                <dt>{% translate 'Created' %}</dt>
+                <dd>{{ file.created|date:"SHORT_DATETIME_FORMAT" }}</dd>
+                {% if user != file.owner %}
+                <dt>{% translate 'Owner' %}</dt>
+                <dd>{{ file.owner }}</dd>
+                {% endif %}
+            </dl>
+            <h4>{% translate 'Downloads' %}</h4>
+            <ul>
+                <li>
+                    <a href="{% url 'core:download' file.id file.type %}">{% translate 'As Image (.png)' %}</a>
+                </li>
+                {% if file.has_molecules %}
+                <li>
+                    <a href="{% url 'core:download' file.id 'sdf' %}">{% translate 'As Structure Data File (.sdf)' %}</a>
+                </li>
+                {% for mol in file.molecules.all %}
+                <li>
+                    <a href="{% url 'core:download_mol' mol.id %}">{% translate 'As MDL-Molfile (.mol)' %} [{{ mol.name|default:forloop.counter }}]</a>
+                </li>
+                {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        <div class="column">
+            <a href="{{ file.content.url }}"><img src="{{ file.content.url }}"></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

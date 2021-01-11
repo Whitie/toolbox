@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}{% load i18n static %}
+
+{% block nav %}
+{% include 'core/nav.inc.html' %}
+{% endblock %}
+
+{% block body %}{% translate "File" as tr_file %}
+<div class="container">
+    <h3>{% translate 'Folders' %}</h3>
+	<div class="row">
+        {% for f in folders %}
+        <div class="column">
+            <div class="card">
+                <div class="card-header" contenteditable data-id="{{ f.id }}" data-url="{% url 'core:rename' 'folder' %}">
+                    {{ f.name }}
+                </div>
+                <div class="card-main">
+                    <a href="{% url 'core:folder' f.id %}">
+                        {% if f.public %}<i class="las la-folder-open la-2x" title="{% translate 'Folder (public)' %}"></i>
+                        {% else %}<i class="las la-folder la-2x" title="{% translate 'Folder (private)' %}"></i>{% endif %}
+                    </a>
+                    <div class="main-description">
+                        {{ f.created|date:"SHORT_DATE_FORMAT" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:"6" %}</div><div class="row">{% endif %}
+        {% endfor %}
+    </div>
+    <hr>
+    <h3>{% translate 'Files' %}</h3>
+    <div class="row">
+        {% for file in files %}
+        <div class="column">
+            <div class="card">
+                <div class="card-header" contenteditable data-id="{{ file.id }}" data-url="{% url 'core:rename' 'file' %}">
+                    {{ file.name|default:tr_file }}
+                </div>
+                <div class="card-main">
+                    <a class="img-preview" href="{% url 'core:detail' file.id %}">
+                        <i class="las {{ file.icon }} la-2x img-hover" title="{{ file.get_type_display }}"></i>
+                        <img src="{{ file.thumb.url }}" class="img-tag">
+                    </a>
+                    <div class="main-description">
+                        {{ file.created|date:"SHORT_DATE_FORMAT" }}<br>
+                        {% include 'core/download.inc.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:"6" %}</div><div class="row">{% endif %}
+        {% endfor %}
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% load i18n %}
+{% if file.type == 'text' %}
+<a href="{% url 'core:download' file.id 'pdf' %}" title="{% translate 'Download as PDF' %}"><i class="las la-file-pdf la-lg"></i></a>
+<a href="{% url 'core:download' file.id 'html' %}" title="{% translate 'Download as HTML' %}"><i class="las la-file-alt la-lg"></i></a>
+{% else %}
+<a href="{% url 'core:download' file.id 'png' %}" title="{% translate 'Download as PNG Image' %}"><i class="las la-file-image la-lg"></i></a>
+{% if file.has_molecules %}
+<a href="{% url 'core:download' file.id 'sdf' %}" title="{% translate 'Export molecules (SDF)' %}"><i class="las la-file-export la-lg"></i></a>
+{% endif %}{% endif %}

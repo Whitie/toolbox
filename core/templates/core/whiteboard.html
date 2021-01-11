@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}{% load i18n static %}
+
+{% block nav %}{% include 'core/nav.inc.html' %}{% endblock %}
+
+{% block header %}<script src="{% static 'ext/painterro/painterro-1.2.12.min.js' %}"></script>{% endblock %}
+
+{% block body %}
+<div class="container">
+    <a class="button button-primary" href="{% if folder %}{% url 'core:folder' folder.id %}{% else %}{% url 'core:index' %}{% endif %}">
+        {% translate 'Back' %}
+    </a>
+</div>
+<div id="whiteboard" data-url="{% url 'core:save_whiteboard' %}">
+    <script>
+        Painterro({
+            language: '{{ js_language }}',
+            defaultTool: 'brush',
+            initText: '{% translate "Note: The Whiteboard will close on save!" %}',
+            extraFonts: ['Roboto'],
+            saveHandler: save_whiteboard
+        }).show();
+    </script>
+</div>
+{% endblock %}
