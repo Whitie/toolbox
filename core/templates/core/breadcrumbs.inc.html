@@ -1,0 +1,13 @@
+{% load i18n %}
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'core:index' %}">{% translate 'Home' %}</a></li>
+        {% for id, name in folder.breadcrumbs %}
+        <li{% if forloop.last %} class="is-active"{% endif %}>
+            <a href="{% url 'core:folder' id %}"{% if forloop.last %} aria-current="page"{% endif %}>
+                {{ name }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>

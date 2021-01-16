@@ -1,56 +1,42 @@
 {% extends 'core/base.html' %}{% load i18n static %}
 
-{% block nav %}
+{% block nav_start %}
 {% include 'core/nav.inc.html' %}
 {% endblock %}
 
-{% block body %}{% translate "File" as tr_file %}
-<div class="container">
-    <h3>{% translate 'Folders' %}</h3>
-	<div class="row">
-        {% for f in folders %}
-        <div class="column">
-            <div class="card">
-                <div class="card-header" contenteditable data-id="{{ f.id }}" data-url="{% url 'core:rename' 'folder' %}">
-                    {{ f.name }}
-                </div>
-                <div class="card-main">
-                    <a href="{% url 'core:folder' f.id %}">
-                        {% if f.public %}<i class="las la-folder-open la-2x" title="{% translate 'Folder (public)' %}"></i>
-                        {% else %}<i class="las la-folder la-2x" title="{% translate 'Folder (private)' %}"></i>{% endif %}
+{% block body %}
+<section class="section">
+    <div class="container">
+        <div class="tabs is-boxed">
+            <ul>
+                <li class="tb-tab is-active">
+                    <a id="tab-folders" onclick="switch_tab();">
+                        <span class="icon is-small"><i class="las la-folder"></i></span>
+                        <span>{% translate 'Folders' %}</span>
                     </a>
-                    <div class="main-description">
-                        {{ f.created|date:"SHORT_DATE_FORMAT" }}
-                    </div>
-                </div>
-            </div>
+                </li>
+                <li class="tb-tab">
+                    <a id="tab-files" onclick="switch_tab();">
+                        <span class="icon is-small"><i class="las la-file"></i></span>
+                        <span>{% translate 'Files' %}</span>
+                    </a>
+                </li>
+            </ul>
         </div>
-        {% if forloop.counter|divisibleby:"6" %}</div><div class="row">{% endif %}
-        {% endfor %}
+    	<div class="columns is-multiline" id="folders">
+            {% for item in folders %}
+            <div class="column is-2">
+                {% include 'core/card_folder.inc.html' %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="columns is-multiline is-hidden" id="files">
+            {% for item in files %}
+            <div class="column is-2">
+                {% include 'core/card_file.inc.html' %}
+            </div>
+            {% endfor %}
+    	</div>
     </div>
-    <hr>
-    <h3>{% translate 'Files' %}</h3>
-    <div class="row">
-        {% for file in files %}
-        <div class="column">
-            <div class="card">
-                <div class="card-header" contenteditable data-id="{{ file.id }}" data-url="{% url 'core:rename' 'file' %}">
-                    {{ file.name|default:tr_file }}
-                </div>
-                <div class="card-main">
-                    <a class="img-preview" href="{% url 'core:detail' file.id %}">
-                        <i class="las {{ file.icon }} la-2x img-hover" title="{{ file.get_type_display }}"></i>
-                        <img src="{{ file.thumb.url }}" class="img-tag">
-                    </a>
-                    <div class="main-description">
-                        {{ file.created|date:"SHORT_DATE_FORMAT" }}<br>
-                        {% include 'core/download.inc.html' %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% if forloop.counter|divisibleby:"6" %}</div><div class="row">{% endif %}
-        {% endfor %}
-	</div>
-</div>
+</section>
 {% endblock %}

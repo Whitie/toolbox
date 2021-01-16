@@ -2,6 +2,8 @@ from io import BytesIO
 
 from django.core.files.base import ContentFile
 from PIL import Image
+from qrcode import QRCode
+from qrcode.image.svg import SvgPathFillImage
 from weasyprint import HTML
 
 from . import models
@@ -67,3 +69,14 @@ def add_js_language(req):
     if '-' in lang:
         lang = lang.split('-')[0]
     return dict(js_language=lang.lower())
+
+
+def make_qrcode(req, relative_url):
+    full_url = req.build_absolute_uri(relative_url)
+    print(full_url)
+    qr = QRCode(box_size=8, image_factory=SvgPathFillImage)
+    qr.add_data(full_url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color='black', back_color='white')
+    print(img)
+    return img, 'image/svg+xml'

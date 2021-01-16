@@ -1,8 +1,10 @@
+from datetime import timedelta
 from functools import partial
+from hashlib import sha256
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.text import format_lazy
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -12,6 +14,11 @@ FILE_ICONS = {
     'text': 'la-edit',
     'mol': 'la-atom',
 }
+
+
+def valid_7d():
+    now = timezone.now()
+    return now + timedelta(days=7)
 
 
 def user_directory_path(instance, filename, subpath=''):
@@ -36,6 +43,19 @@ class Folder(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.owner.username}'
+
+    def get_parents(self):
+        parents = []
+        parent = self.parent
+        while parent is not None:
+            parents.append((parent.id, parent.name))
+            parent = parent.parent
+        return parents
+
+    def breadcrumbs(self):
+        parents = list(reversed(self.get_parents()))
+        parents.append((self.id, self.name))
+        return parents
 
     class Meta:
         verbose_name = _('Folder')
@@ -119,3 +139,24 @@ class Molecule(models.Model):
         verbose_name = _('Molecule')
         verbose_name_plural = _('Molecules')
         ordering = ['name']
+
+
+class FileShare(models.Model):
+    file = models.ForeignKey(
+        File, on_delete=models.CASCADE, verbose_name=_('File'),
+        related_name='shares'
+    )
+    hash = models.CharField(editable=False, max_length=64)
+    created = models.DateTimeField(auto_now_add=True)
+    valid_until = models.DateTimeField(_('Valid until'), default=valid_7d)
+
+    def save(self, *args, **kw):
+        now = str(timezone.now())
+        filename = str(self.file)
+        self.hash = sha256(f'{now}{filename}'.encode('utf-8')).hexdigest()
+        super().save(*args, **kw)
+
+    class Meta:
+        verbose_name = _('File Share')
+        verbose_name_plural = _('File Shares')
+        ordering = ['file', '-created']

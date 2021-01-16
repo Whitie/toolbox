@@ -4,13 +4,14 @@ from django.contrib.auth import (
 )
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from . import forms, utils
-from .models import File, Folder, Molecule
+from .models import File, FileShare, Folder, Molecule
 
 
 def index(req):
@@ -73,7 +74,9 @@ def folder(req, folder_id):
     req.session['folder'] = folder.id
     if not utils.is_owner_or_public(req.user, folder=folder):
         return HttpResponseForbidden()
-    return render(req, 'core/folder.html', {'folder': folder})
+    ctx = dict(folder=folder, folders=folder.subfolders.all(),
+               files=folder.files.all())
+    return render(req, 'core/folder.html', ctx)
 
 
 @login_required
@@ -111,15 +114,22 @@ def rename(req, what):
     return HttpResponse('ok')
 
 
-def detail(req, file_id):
+def detail(req, file_id, shared=False):
     file = File.objects.select_related().get(pk=file_id)
-    if not utils.is_owner_or_public(req.user, file=file):
+    if not shared and not utils.is_owner_or_public(req.user, file=file):
         return HttpResponseForbidden()
     if file.type == 'text':
         tpl = 'text'
     else:
         tpl = 'image'
-    return render(req, f'core/detail_{tpl}.html', {'file': file})
+    ctx = dict(file=file, shared=shared)
+    ctx['share'] = FileShare.objects.filter(file=file).last()
+    return render(req, f'core/detail_{tpl}.html', ctx)
+
+
+def shared_file(req, hash):
+    share = get_object_or_404(FileShare, hash=hash)
+    return detail(req, share.file.id, shared=True)
 
 
 def download(req, file_id, filetype):
@@ -151,4 +161,20 @@ def download_mol(req, mol_id):
     mimetype, ext = mol.mimetype
     response = HttpResponse(mol.content, content_type=mimetype)
     response['Content-Disposition'] = f'attachment; filename={name}{ext}'
+    return response
+
+
+def shared_folder_qrcode(req, folder_id):
+    url = reverse('core:folder', args=(folder_id,))
+    img, ct = utils.make_qrcode(req, url)
+    response = HttpResponse(content_type=ct)
+    img.save(response)
+    return response
+
+
+def shared_file_qrcode(req, share_id):
+    url = reverse('core:shared_file', args=(share_id,))
+    img, ct = utils.make_qrcode(req, url)
+    response = HttpResponse(content_type=ct)
+    img.save(response)
     return response

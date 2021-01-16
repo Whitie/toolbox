@@ -1,33 +1,43 @@
 {% load i18n %}
-<li>
-    <a href="#" id="btn-add-folder" data-url="{% url 'core:add_folder' %}">
-        <i class="las la-folder-plus"></i> {% translate 'Add Folder' %}
-    </a>
-</li>
-<li>
-    <a href="{% url 'core:whiteboard' %}" id="btn-new-whiteboard">
-        <i class="las la-chalkboard"></i> {% translate 'Whiteboard' %}
-    </a>
-</li>
-<li>
-    <a href="#" id="btn-new-chem">
-        <i class="las la-atom"></i> {% translate 'Molecules' %}
-    </a>
-</li>
-<li>
-    <a href="#" id="btn-new-text">
-        <i class="las la-edit"></i> {% translate 'Texteditor' %}
-    </a>
-</li>
+<a href="#" id="btn-add-folder" data-url="{% url 'core:add_folder' %}" class="navbar-item">
+    <div class="icon-text">
+        <span class="icon">
+            <i class="las la-folder-plus la-lg"></i>
+        </span>
+        <span>{% translate 'Add Folder' %}</span>
+    </div>
+</a>
+<a href="{% url 'core:whiteboard' %}" id="btn-new-whiteboard" class="navbar-item">
+    <div class="icon-text">
+        <span class="icon">
+            <i class="las la-chalkboard la-lg"></i>
+        </span>
+        <span>{% translate 'Whiteboard' %}</span>
+    </div>
+</a>
+<a href="#" id="btn-new-chem" class="navbar-item">
+    <div class="icon-text">
+        <span class="icon">
+            <i class="las la-atom la-lg"></i>
+        </span>
+        <span>{% translate 'Molecules' %}</span>
+    </div>
+</a>
+<a href="#" id="btn-new-text" class="navbar-item">
+    <div class="icon-text">
+        <span class="icon">
+            <i class="las la-edit la-lg"></i>
+        </span>
+        <span>{% translate 'Texteditor' %}</span>
+    </div>
+</a>
 {% if user.is_superuser %}
-<li>
-    <a href="{% url 'admin:index' %}">
-        <i class="las la-cog"></i> {% translate 'Backend' %}
-    </a>
-</li>
+<a href="{% url 'admin:index' %}" class="navbar-item">
+    <div class="icon-text">
+        <span class="icon">
+            <i class="las la-cog la-lg"></i>
+        </span>
+        <span>{% translate 'Backend' %}</span>
+    </div>
+</a>
 {% endif %}
-<li>
-    <a href="{% url 'core:logout' %}" title="{% blocktranslate %}Logged in as {{ user }}{% endblocktranslate %}">
-        <i class="las la-sign-out-alt"></i> {% translate 'Logout' %}
-    </a>
-</li>

@@ -1,15 +1,13 @@
 {% extends 'core/base.html' %}{% load i18n %}
 
 {% block body %}
-<div class="container">
-	<h1>Toolbox</h1>
-	<div class="row">
-		<div class="column">
-			<p>
-                {% translate 'Logout successfull.' %}<br>
-                <a href="{% url 'core:index' %}">{% translate 'Login again' %}</a>
-            </p>
-		</div>
+<section class="section">
+    <div class="container">
+    	<h1 class="title">Toolbox</h1>
+		<p>
+            {% translate 'Logout successfull.' %}<br>
+            <a href="{% url 'core:index' %}">{% translate 'Login again' %}</a>
+        </p>
     </div>
-</div>
+</section>
 {% endblock %}

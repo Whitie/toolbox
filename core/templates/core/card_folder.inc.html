@@ -1,0 +1,33 @@
+{% load i18n %}
+<div class="card">
+    <div class="card-header">
+        <div class="card-header-title" contenteditable data-id="{{ item.id }}" data-url="{% url 'core:rename' 'folder' %}">{{ item.name }}</div>
+    </div>
+    <div class="card-content has-tooltip-arrow has-tooltip-{% if item.public %}danger{% else %}success{% endif %}" data-tooltip="{% if item.public %}{% translate 'Public' %}{% else %}{% translate 'Private' %}{% endif %}">
+        <a href="{% url 'core:folder' item.id %}">
+            <div class="icon-text has-text-info">
+                <span class="icon is-medium">
+                    <i class="las la-{% if item.public %}qrcode{% else %}folder{% endif %} la-2x"></i>
+                </span>
+                <span>{{ item.created|date:"SHORT_DATE_FORMAT" }}</span>
+            </div>
+        </a>
+    </div>
+    <div class="card-footer">
+        <a href="#" class="card-footer-item">
+            <div class="icon-text">
+                {% if item.public %}
+                <span class="icon">
+                    <i class="las la-user-lock"></i>
+                </span>
+                <span>{% translate 'make private' %}</span>
+                {% else %}
+                <span class="icon">
+                    <i class="las la-globe"></i>
+                </span>
+                <span>{% translate 'make public' %}</span>
+                {% endif %}
+            </div>
+        </a>
+    </div>
+</div>

@@ -42,9 +42,8 @@ function save_inline_edit(event) {
             }).done(function(msg) {
                 if (msg != 'ok') {
                     document.execCommand('undo');
-                    $.notify(gettext('Error on save'), 'error');
                 } else {
-                    $.notify(gettext('Saved'), 'success');
+                    console.log('Saved');
                 }
             });
             el.blur();
@@ -102,8 +101,17 @@ function save_whiteboard(image, done) {
     });
 }
 
+function switch_tab() {
+    $('.tb-tab').toggleClass('is-active');
+    $('.columns').toggleClass('is-hidden');
+}
+
 $(document).ready(function() {
-    if ($('.card-header').length) {
+    $('.navbar-burger').click(function() {
+        $('.navbar-burger').toggleClass('is-active');
+        $('.navbar-menu').toggleClass('is-active');
+    });
+    if ($('.card-header-title').length) {
         console.log('Inline editing enabled');
         $(document).on('keydown', save_inline_edit);
     }

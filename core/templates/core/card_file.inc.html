@@ -1,0 +1,45 @@
+{% load i18n %}
+<div class="card">{% translate "File" as tr_file %}
+    <div class="card-header">
+        <div class="card-header-title"  contenteditable data-id="{{ item.id }}" data-url="{% url 'core:rename' 'file' %}">{{ item.name|default:tr_file }}</div>
+    </div>
+    <div class="card-image{% if not item.thumb %} has-text-centered{% endif %}">
+        <a href="{% url 'core:detail' item.id %}">
+            {% if item.thumb %}
+            <figure class="image is-3by2">
+                <img src="{{ item.thumb.url }}">
+            </figure>
+            {% else %}
+            <span class="icon is-large">
+                <i class="las la-file-image la-3x"></i>
+            </span>
+            {% endif %}
+        </a>
+    </div>
+    <div class="card-content">
+        <div class="icon-text has-text-info has-tooltip-arrow" data-tooltip="{{ item.get_type_display }}">
+            <span class="icon is-medium">
+                <i class="las {{ item.icon }} la-2x"></i>
+            </span>
+            <span>{{ item.created|date:"SHORT_DATE_FORMAT" }}</span>
+        </div>
+    </div>
+    <div class="card-footer">
+        {% if file.type == 'text' %}
+        <a href="{% url 'core:download' item.id 'pdf' %}" class="card-footer-item has-tooltip-arrow" data-tooltip="{% translate 'Download as PDF' %}">
+            <i class="las la-file-pdf la-lg"></i>
+        </a>
+        <a href="{% url 'core:download' item.id 'html' %}" class="card-footer-item has-tooltip-arrow" data-tooltip="{% translate 'Download as HTML' %}">
+            <i class="las la-file-alt la-lg"></i>
+        </a>
+        {% else %}
+        <a href="{% url 'core:download' item.id 'png' %}" class="card-footer-item has-tooltip-arrow" data-tooltip="{% translate 'Download as PNG Image' %}">
+            <i class="las la-file-image la-lg"></i>
+        </a>
+        {% if file.has_molecules %}
+        <a href="{% url 'core:download' item.id 'sdf' %}" class="card-footer-item has-tooltip-arrow" data-tooltip="{% translate 'Export molecules (SDF)' %}">
+            <i class="las la-file-export la-lg"></i>
+        </a>
+        {% endif %}{% endif %}
+    </div>
+</div>
