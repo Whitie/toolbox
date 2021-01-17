@@ -42,8 +42,10 @@ function save_inline_edit(event) {
             }).done(function(msg) {
                 if (msg != 'ok') {
                     document.execCommand('undo');
+                    el.notify(gettext('Something went wrong'), 'warn');
                 } else {
                     console.log('Saved');
+                    el.notify(gettext('Saved'), 'success');
                 }
             });
             el.blur();
@@ -73,9 +75,7 @@ function add_folder() {
             headers: {'X-CSRFToken': getCookie('csrftoken')}
         }).done(function(msg) {
             console.log(msg);
-            $.notify(gettext('Folder created: ') + data.name + '\n' +
-                     gettext('Press reload to see it.'),
-                     'success');
+            window.location.reload();
         });
     });
 }
@@ -106,6 +106,33 @@ function switch_tab() {
     $('.columns').toggleClass('is-hidden');
 }
 
+function change_state(folder_id) {
+    var url = $('#folder_'+folder_id).data('url');
+    $.get(url).done(function() {
+        window.location.reload();
+    });
+}
+
+function save_molecules(molecules, image_data) {
+    console.log('Saving molecules');
+    var url = $('#molecules').data('url');
+    var data = {image: image_data, molecules: molecules};
+    $.alertable.prompt(gettext('Name')).then(function(formdata) {
+        data['name'] = formdata.value;
+        $.ajax({
+            method: 'POST',
+            url: url,
+            data: JSON.stringify(data),
+            processData: false,
+            contentType: false,
+            headers: {'X-CSRFToken': getCookie('csrftoken')}
+        }).done(function(msg) {
+            console.log(msg);
+            $.notify(gettext('Molecules saved.'), 'success');
+        });
+    });
+}
+
 $(document).ready(function() {
     $('.navbar-burger').click(function() {
         $('.navbar-burger').toggleClass('is-active');
@@ -121,5 +148,8 @@ $(document).ready(function() {
     }
     if ($('#btn-new-whiteboard').length) {
         console.log('Whiteboard enabled');
+    }
+    if ($('#btn-new-chem').length) {
+        console.log('Molecules enabled');
     }
 });

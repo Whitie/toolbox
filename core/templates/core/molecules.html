@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}{% load i18n static %}
+
+{% block header %}
+<link rel="stylesheet" href="{% static 'ext/chemdoodle/ChemDoodleWeb.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'ext/chemdoodle/uis/jquery-ui-1.11.4.css' %}" type="text/css">
+{% endblock %}
+
+{% block nav_start %}{% include 'core/nav.inc.html' %}{% endblock %}
+
+{% block body %}
+<section class="section" id="molecules" data-url="{% url 'core:save_molecules' %}">
+    <div class="container">
+        <a class="button is-link" href="{% if folder %}{% url 'core:folder' folder.id %}{% else %}{% url 'core:index' %}{% endif %}">
+            {% translate 'Back' %}
+        </a>
+        <button class="button is-primary" id="save-molecules">
+            <span class="icon">
+                <i class="las la-save"></i>
+            </span>
+            <span>{% translate 'Save to Server' %}</span>
+        </button>
+    </div>
+</section>
+{% endblock %}
+{% block script %}
+<center>
+    <script type="text/javascript" src="{% static 'ext/chemdoodle/ChemDoodleWeb.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ext/chemdoodle/uis/ChemDoodleWeb-uis.js' %}"></script>
+    <script>
+        //ChemDoodle.ELEMENT['H'].jmolColor = 'black';
+        //ChemDoodle.ELEMENT['S'].jmolColor = '#B9A130';
+        var sketcher = new ChemDoodle.SketcherCanvas(
+            'sketcher', window.innerWidth-50, window.innerHeight-150,
+            {useServices: false, resizable: true}
+        );
+        sketcher.styles.atoms_displayTerminalCarbonLabels_2D = true;
+        sketcher.styles.atoms_useJMOLColors = true;
+        sketcher.styles.bonds_clearOverlaps_2D = true;
+        sketcher.styles.shapes_color = '#c10000';
+        sketcher.repaint();
+        $('html, body').animate({scrollTop: $(document).height()}, 5000);
+        $('#save-molecules').click(function() {
+            var image_data = ChemDoodle.io.png.string(sketcher);
+            var molecules = $.map(sketcher.getMolecules(), ChemDoodle.writeMOL);
+            save_molecules(molecules, image_data);
+        });
+    </script>
+</center>
+{% endblock %}

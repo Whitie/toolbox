@@ -5,7 +5,7 @@
 {% block body %}
 <section class="section" id="whiteboard" data-url="{% url 'core:save_whiteboard' %}">
     <div class="container">
-        <a class="button is-primary" href="{% if folder %}{% url 'core:folder' folder.id %}{% else %}{% url 'core:index' %}{% endif %}">
+        <a class="button is-link" href="{% if folder %}{% url 'core:folder' folder.id %}{% else %}{% url 'core:index' %}{% endif %}">
             {% translate 'Back' %}
         </a>
     </div>

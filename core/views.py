@@ -1,8 +1,13 @@
+import base64
+import json
+
 from django.contrib import messages
 from django.contrib.auth import (
     authenticate, login as django_login, logout as django_logout
 )
 from django.contrib.auth.decorators import login_required
+from django.core.files.base import ContentFile
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -26,8 +31,10 @@ def index(req):
 
 
 def public_folders(req):
+    req.session['folder'] = None
     folders = Folder.objects.filter(public=True)
-    return render(req, 'core/public_folders.html', {'folders': folders})
+    ctx = dict(folder=None, folders=folders)
+    return render(req, 'core/public_folders.html', ctx)
 
 
 def login(req):
@@ -74,7 +81,10 @@ def folder(req, folder_id):
     req.session['folder'] = folder.id
     if not utils.is_owner_or_public(req.user, folder=folder):
         return HttpResponseForbidden()
-    ctx = dict(folder=folder, folders=folder.subfolders.all(),
+    query = Q(public=True)
+    if req.user.is_authenticated:
+        query |= Q(owner=req.user)
+    ctx = dict(folder=folder, folders=folder.subfolders.filter(query),
                files=folder.files.all())
     return render(req, 'core/folder.html', ctx)
 
@@ -103,6 +113,34 @@ def save_whiteboard(req):
     return HttpResponse('invalid')
 
 
+@login_required
+def molecules(req):
+    folder = req.session.get('folder', None)
+    if folder:
+        folder = Folder.objects.get(pk=folder)
+    return render(req, 'core/molecules.html', {'folder': folder})
+
+
+@login_required
+@require_POST
+def save_molecules(req):
+    data = json.loads(req.body)
+    folder = req.session.get('folder', None)
+    if folder:
+        folder = Folder.objects.get(pk=folder)
+    image_data = data['image'].split(',', 1)[1]
+    filename = get_valid_filename(f'{data["name"]}.png')
+    png = ContentFile(base64.b64decode(image_data))
+    file = File(owner=req.user, type='chem', name=data['name'],
+                folder=folder)
+    file.content.save(filename, png)
+    for num, mol in enumerate(data['molecules'], start=1):
+        molecule = Molecule(name=f'{file.name} {num:03d}', content=mol,
+                            file=file)
+        molecule.save()
+    return HttpResponse('ok')
+
+
 @require_POST
 def rename(req, what):
     item = utils.get_item(what, req.POST['id'])
@@ -118,6 +156,9 @@ def detail(req, file_id, shared=False):
     file = File.objects.select_related().get(pk=file_id)
     if not shared and not utils.is_owner_or_public(req.user, file=file):
         return HttpResponseForbidden()
+    if req.method == 'POST':
+        action = req.POST.get('share')
+        utils.manage_share(file, action)
     if file.type == 'text':
         tpl = 'text'
     else:
@@ -178,3 +219,15 @@ def shared_file_qrcode(req, share_id):
     response = HttpResponse(content_type=ct)
     img.save(response)
     return response
+
+
+def change_folder_state(req, folder_id, new_state):
+    folder = Folder.objects.get(pk=folder_id)
+    if folder.owner != req.user:
+        return HttpResponseForbidden()
+    if new_state == 'public':
+        folder.public = True
+    else:
+        folder.public = False
+    folder.save()
+    return HttpResponse('ok')

@@ -80,3 +80,13 @@ def make_qrcode(req, relative_url):
     img = qr.make_image(fill_color='black', back_color='white')
     print(img)
     return img, 'image/svg+xml'
+
+
+def manage_share(file, action):
+    shares = models.FileShare.objects.filter(file=file)
+    shares.delete()
+    if action == 'remove':
+        return
+    elif action == 'add':
+        share = models.FileShare(file=file)
+        share.save()

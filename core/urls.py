@@ -9,6 +9,8 @@ urlpatterns = [
     path('whiteboard/', views.whiteboard, name='whiteboard'),
     path('whiteboard/save/', views.save_whiteboard,
          name='save_whiteboard'),
+    path('molecules/', views.molecules, name='molecules'),
+    path('molecules/save/', views.save_molecules, name='save_molecules'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
     path('success/', views.success, name='success'),
@@ -25,4 +27,6 @@ urlpatterns = [
          name='download'),
     path('download_mol/<int:mol_id>/', views.download_mol,
          name='download_mol'),
+    path('change_state/<int:folder_id>/<new_state>/',
+         views.change_folder_state, name='change_folder_state'),
 ]

@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}{% load i18n static %}
+
+{% block nav_start %}
+{% if user.is_authenticated %}{% include 'core/nav.inc.html' %}{% endif %}
+{% endblock %}
+
+{% block body %}
+<section class="section">
+    <div class="container">
+        <div class="tabs is-boxed">
+            <ul>
+                <li class="tb-tab is-active">
+                    <a id="tab-folders" onclick="switch_tab();">
+                        <span class="icon is-small"><i class="las la-folder"></i></span>
+                        <span>{% translate 'Folders' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    	<div class="columns is-multiline" id="folders">
+            {% for item in folders %}
+            <div class="column is-2">
+                {% include 'core/card_folder.inc.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

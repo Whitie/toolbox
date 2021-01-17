@@ -1,13 +1,13 @@
 {% extends 'core/base.html' %}{% load i18n static %}
 
 {% block nav_start %}
-{% include 'core/nav.inc.html' %}
+{% if user.is_authenticated %}{% include 'core/nav.inc.html' %}{% endif %}
 {% endblock %}
 
 {% block body %}
 <section class="section">
     <div class="container">
-        {% include 'core/breadcrumbs.inc.html' %}
+        {% if user == folder.owner %}{% include 'core/breadcrumbs.inc.html' %}{% endif %}
         <div class="tabs is-boxed">
             <ul>
                 <li class="tb-tab is-active">
@@ -49,6 +49,11 @@
                 <img src="{% url 'core:folder_qr' folder.id %}">
             </a>
         </figure>
+        {% if user != folder.owner %}
+        <a href="{% url 'core:public_folders' %}" class="button is-link">
+            {% translate 'Back' %}
+        </a>
+        {% endif %}
     </div>
 </section>
 {% endif %}

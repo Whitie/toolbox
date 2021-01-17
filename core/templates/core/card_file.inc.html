@@ -36,7 +36,7 @@
         <a href="{% url 'core:download' item.id 'png' %}" class="card-footer-item has-tooltip-arrow" data-tooltip="{% translate 'Download as PNG Image' %}">
             <i class="las la-file-image la-lg"></i>
         </a>
-        {% if file.has_molecules %}
+        {% if item.has_molecules %}
         <a href="{% url 'core:download' item.id 'sdf' %}" class="card-footer-item has-tooltip-arrow" data-tooltip="{% translate 'Export molecules (SDF)' %}">
             <i class="las la-file-export la-lg"></i>
         </a>

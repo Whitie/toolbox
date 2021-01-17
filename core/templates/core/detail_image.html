@@ -45,8 +45,20 @@
                         </a>
                     </figure>
                     {% endif %}
+                    {% if user == file.owner %}
+                    <form method="post" action="{% url 'core:detail' file.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="share" value="{% if share %}remove{% else %}add{% endif %}">
+                        <button class="button is-{% if share %}danger{% else %}primary{% endif %} is-light" type="submit">
+                            <span>{% if share %}{% translate 'Remove share' %}{% else %}{% translate 'Share' %}{% endif %}</span>
+                            <span class="icon">
+                                <i class="las la-{% if share %}trash{% else %}share{% endif %}-alt"></i>
+                            </span>
+                        </button>
+                    </form>
+                    {% endif %}
                     {% if not shared %}
-                    <a class="button is-link" href="{% if file.folder %}{% url 'core:folder' file.folder.id %}{% else %}{% url 'core:index' %}{% endif %}">
+                    <a class="button is-link mt-6" href="{% if file.folder %}{% url 'core:folder' file.folder.id %}{% else %}{% url 'core:index' %}{% endif %}">
                         {% translate 'Back' %}
                     </a>
                     {% endif %}

@@ -14,7 +14,8 @@
         </a>
     </div>
     <div class="card-footer">
-        <a href="#" class="card-footer-item">
+        {% if user == item.owner %}
+        <a href="#" class="card-footer-item" id="folder_{{ item.id }}" onclick="change_state('{{ item.id }}');" data-url="{% url 'core:change_folder_state' item.id item.public|yesno:"private,public" %}">
             <div class="icon-text">
                 {% if item.public %}
                 <span class="icon">
@@ -29,5 +30,15 @@
                 {% endif %}
             </div>
         </a>
+        {% else %}
+        <a href="#" class="card-footer-item">
+            <div class="icon-text">
+                <span class="icon">
+                    <i class="las la-user"></i>
+                </span>
+                <span>{{ item.owner }}</span>
+            </div>
+        </a>
+        {% endif %}
     </div>
 </div>
