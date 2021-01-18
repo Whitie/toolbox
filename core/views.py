@@ -14,6 +14,7 @@ from django.utils.text import get_valid_filename
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django_q.tasks import async_task
 
 from . import forms, utils
 from .models import CKUploadImage, File, FileShare, Folder, Molecule
@@ -118,13 +119,24 @@ def save_molecules(req):
     folder = utils.get_folder(req)
     filename = get_valid_filename(f'{data["name"]}.png')
     png = utils.get_kekule_image(data['image'])
-    file = File(owner=req.user, type='chem', name=data['name'],
-                folder=folder)
+    update = False
+    try:
+        file = File.objects.get(
+            owner=req.user, type='chem', name=data['name'], folder=folder
+        )
+        file.molecules.all().delete()
+        update = True
+    except File.DoesNotExist:
+        file = File(
+            owner=req.user, type='chem', name=data['name'], folder=folder
+        )
     file.content.save(filename, png)
     for num, mol in enumerate(data['molecules'], start=1):
         molecule = Molecule(name=f'{file.name} {num:03d}', content=mol,
                             file=file)
         molecule.save()
+    if update:
+        async_task('core.utils.create_thumbnail', file)
     return HttpResponse('ok')
 
 
