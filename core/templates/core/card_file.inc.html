@@ -6,7 +6,7 @@
     <div class="card-image{% if not item.thumb %} has-text-centered{% endif %}">
         <a href="{% url 'core:detail' item.id %}">
             {% if item.thumb %}
-            <figure class="image is-3by2">
+            <figure class="image {% if item.type == 'whiteboard' %}is-3by2{% else %}is-square{% endif %}">
                 <img src="{{ item.thumb.url }}">
             </figure>
             {% else %}

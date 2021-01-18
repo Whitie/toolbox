@@ -1,0 +1,44 @@
+{% extends 'core/base.html' %}{% load i18n static %}
+
+{% block header %}
+<link rel="stylesheet" href="{% static 'ext/kekule/kekule.css' %}" type="text/css">
+{% endblock %}
+
+{% block nav_start %}{% include 'core/nav.inc.html' %}{% endblock %}
+
+{% block body %}
+<section class="section" id="molecules" data-url="{% url 'core:save_molecules' %}">
+    <div class="container">
+        <a class="button is-link" href="{% if folder %}{% url 'core:folder' folder.id %}{% else %}{% url 'core:index' %}{% endif %}">
+            {% translate 'Back' %}
+        </a>
+        <button class="button is-primary" id="save-molecules">
+            <span class="icon">
+                <i class="las la-save"></i>
+            </span>
+            <span>{% translate 'Save to Server' %}</span>
+        </button>
+    </div>
+</section>
+<section class="section">
+    <div class="container">
+        <div id="kekule"></div>
+    </div>
+</section>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{% static 'ext/kekule/kekule.min.js' %}"></script>
+<script>
+    function export_to_mol(molecule) {
+        return Kekule.IO.saveFormatData(molecule, 'mol');
+    }
+    var composer = new Kekule.Editor.Composer(document.getElementById('kekule'));
+    composer.setDimension('1300px', '800px');
+    $('html, body').animate({scrollTop: $(document).height()}, 5000);
+    $('#save-molecules').click(function() {
+        var image_data = composer.getEditor().exportToDataUri();
+        var molecules = $.map(composer.exportObjs(Kekule.Molecule), export_to_mol);
+        save_molecules(molecules, image_data);
+    });
+</script>
+{% endblock %}

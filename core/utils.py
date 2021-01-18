@@ -1,3 +1,5 @@
+import base64
+
 from io import BytesIO
 
 from django.core.files.base import ContentFile
@@ -107,3 +109,14 @@ def get_folder(req):
     if folder:
         folder = models.Folder.objects.get(pk=folder)
     return folder
+
+
+def get_kekule_image(image_data):
+    image_data = image_data.split(',', 1)[1]
+    png_data = base64.b64decode(image_data)
+    img = Image.open(BytesIO(png_data)).convert('RGBA')
+    bg = Image.new('RGBA', img.size, (255, 255, 255))
+    new_img = Image.alpha_composite(bg, img)
+    tmp = BytesIO()
+    new_img.save(tmp, format='png')
+    return ContentFile(tmp.getvalue())

@@ -1,4 +1,3 @@
-import base64
 import json
 
 from django.contrib import messages
@@ -109,7 +108,7 @@ def save_whiteboard(req):
 @login_required
 def molecules(req):
     folder = utils.get_folder(req)
-    return render(req, 'core/molecules.html', {'folder': folder})
+    return render(req, 'core/molecules2.html', {'folder': folder})
 
 
 @login_required
@@ -117,9 +116,8 @@ def molecules(req):
 def save_molecules(req):
     data = json.loads(req.body)
     folder = utils.get_folder(req)
-    image_data = data['image'].split(',', 1)[1]
     filename = get_valid_filename(f'{data["name"]}.png')
-    png = ContentFile(base64.b64decode(image_data))
+    png = utils.get_kekule_image(data['image'])
     file = File(owner=req.user, type='chem', name=data['name'],
                 folder=folder)
     file.content.save(filename, png)
