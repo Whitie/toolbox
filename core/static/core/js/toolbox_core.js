@@ -152,4 +152,7 @@ $(document).ready(function() {
     if ($('#btn-new-chem').length) {
         console.log('Molecules enabled');
     }
+    if ($('#btn-new-text').length) {
+        console.log('Texteditor enabled');
+    }
 });

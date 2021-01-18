@@ -125,6 +125,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 MESSAGE_TAGS = {
     messages.WARNING: 'warn',
 }

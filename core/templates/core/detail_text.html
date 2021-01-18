@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}{% load i18n %}
+
+{% block nav_start %}
+{% if user.is_authenticated %}{% include 'core/nav.inc.html' %}{% endif %}
+{% endblock %}
+
+{% block body %}{% translate "File" as tr_file %}
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-two-fifths">
+                <div class="content">
+                <h3>{{ file.name|default:tr_file }} ({{ file.get_type_display }})</h3>
+                    <dl>
+                        <dt>{% translate 'Folder' %}</dt>
+                        <dd>{% if file.folder %}{{ file.folder.name }} ({% translate 'Public' %}: {{ file.folder.public|yesno }}){% else %}-{% endif %}</dd>
+                        <dt>{% translate 'Created' %}</dt>
+                        <dd>{{ file.created|date:"SHORT_DATETIME_FORMAT" }}</dd>
+                        {% if user != file.owner %}
+                        <dt>{% translate 'Owner' %}</dt>
+                        <dd>{{ file.owner }}</dd>
+                        {% endif %}
+                    </dl>
+                    <h4>{% translate 'Downloads' %}</h4>
+                    <ul>
+                        <li>
+                            <a href="{% url 'core:download' file.id 'pdf' %}">{% translate 'As PDF (.pdf)' %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'core:download' file.id 'html' %}">{% translate 'As HTML (.html)' %}</a>
+                        </li>
+                    </ul>
+                    {% if share %}
+                    <h4>{% translate 'Direct Share' %}</h4>
+                    <figure class="image is-128x128">
+                        <a href="{% url 'core:shared_file' share.hash %}">
+                            <img src="{% url 'core:file_qr' share.id %}">
+                        </a>
+                    </figure>
+                    {% endif %}
+                    {% if user == file.owner %}
+                    <form method="post" action="{% url 'core:detail' file.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="share" value="{% if share %}remove{% else %}add{% endif %}">
+                        <button class="button is-{% if share %}danger{% else %}primary{% endif %} is-light" type="submit">
+                            <span>{% if share %}{% translate 'Remove share' %}{% else %}{% translate 'Share' %}{% endif %}</span>
+                            <span class="icon">
+                                <i class="las la-{% if share %}trash{% else %}share{% endif %}-alt"></i>
+                            </span>
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% if not shared %}
+                    <a class="button is-link mt-6" href="{% if file.folder %}{% url 'core:folder' file.folder.id %}{% else %}{% url 'core:index' %}{% endif %}">
+                        {% translate 'Back' %}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="column">
+                <embed src="{{ file.pdf.url }}" type="application/pdf" width="100%" height="700">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

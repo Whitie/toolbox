@@ -10,6 +10,18 @@ from . import models
 
 
 THUMB_SIZE = 200, 200
+HTML_SKELETON = """\
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{title}</title>
+    </head>
+    <body>
+        {body}
+    </body>
+</html>
+"""
 
 
 def is_owner_or_public(user, folder=None, file=None):
@@ -49,8 +61,7 @@ def create_thumbnail(instance):
 def create_thumbnail_and_pdf(instance):
     name = instance.content.name.split('/')[-1]
     name = name.split('.')[0]
-    instance.content.open('r')
-    html = HTML(file_obj=instance.content)
+    html = HTML(filename=instance.content.path)
     png = html.write_png()
     _pdf = html.write_pdf()
     img = Image.open(BytesIO(png))
@@ -61,7 +72,6 @@ def create_thumbnail_and_pdf(instance):
     pdf = ContentFile(_pdf)
     instance.thumb.save(f'tn_{name}.png', thumb, save=False)
     instance.pdf.save(f'{name}.pdf', pdf)
-    instance.content.close()
 
 
 def add_js_language(req):
@@ -90,3 +100,10 @@ def manage_share(file, action):
     elif action == 'add':
         share = models.FileShare(file=file)
         share.save()
+
+
+def get_folder(req):
+    folder = req.session.get('folder', None)
+    if folder:
+        folder = models.Folder.objects.get(pk=folder)
+    return folder

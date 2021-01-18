@@ -1,6 +1,8 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
+from .models import CKUploadImage
+
 
 CLASSES = 'input is-primary is-rounded'
 
@@ -26,3 +28,14 @@ class NewFolderForm(forms.Form):
 class NewFileForm(forms.Form):
     name = forms.CharField(max_length=100)
     content = forms.FileField()
+
+
+class CKUploadImageForm(forms.ModelForm):
+    class Meta:
+        model = CKUploadImage
+        fields = ['upload']
+
+
+class EditorForm(forms.Form):
+    editor = forms.CharField()
+    name = forms.CharField()

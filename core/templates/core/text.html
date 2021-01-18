@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}{% load i18n static %}
+
+{% block nav_start %}{% include 'core/nav.inc.html' %}{% endblock %}
+
+{% block body %}
+<section class="section" id="molecules" data-url="{% url 'core:save_molecules' %}">
+    <div class="container">
+        <p class="mb-2">
+            <a class="button is-link" href="{% if folder %}{% url 'core:folder' folder.id %}{% else %}{% url 'core:index' %}{% endif %}">
+                {% translate 'Back' %}
+            </a>
+            <span id="text_name" class="is-pulled-right">
+                {% translate 'No Name' %}
+            </span>
+        </p>
+        <form method="post" action="{% url 'core:text' %}">
+            {% csrf_token %}
+            <input type="hidden" name="name" id="name" value="{% translate 'No Name' %}">
+            <textarea id="editor" name="editor" rows="30" cols="100">
+            </textarea>
+        </form>
+    </div>
+</section>
+{% endblock %}
+{% block script %}
+<center>
+    <script type="text/javascript" src="{% static 'ext/ckeditor/ckeditor.js' %}"></script>
+    <script>
+        CKEDITOR.replace('editor', {
+            extraPlugins: 'autogrow,uploadimage',
+            autoGrow_minHeight: 600,
+            autoGrow_onStartup: true,
+            uploadUrl: '{% url "core:ck_upload_image" %}'
+        });
+        $.alertable.prompt(gettext('Name')).then(function(formdata) {
+            $('#text_name').text(formdata.value);
+            $('#name').val(formdata.value);
+            $.notify(
+                '{% translate "Note: Saving will close the editor!" %}',
+                {position: 'top center', className: 'warn'}
+            );
+        });
+    </script>
+</center>
+{% endblock %}

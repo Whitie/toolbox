@@ -1,0 +1,291 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1\n"
+"Report-Msgid-Bugs-To: https://github.com/Whitie/toolbox/issues\n"
+"POT-Creation-Date: 2021-01-18 15:08+0100\n"
+"PO-Revision-Date: 2021-01-18 15:08+0100\n"
+"Last-Translator: Thorsten Weimann <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: core/forms.py:13
+msgid "Username"
+msgstr "Benutzername"
+
+#: core/forms.py:18
+msgid "Password"
+msgstr "Passwort"
+
+#: core/models.py:32 core/models.py:61 core/models.py:81
+#: core/templates/core/detail_image.html:15
+#: core/templates/core/detail_text.html:15
+msgid "Folder"
+msgstr "Ordner"
+
+#: core/models.py:34 core/models.py:77 core/models.py:170
+#: core/templates/core/detail_image.html:20
+#: core/templates/core/detail_text.html:20
+msgid "Owner"
+msgstr "Besitzer"
+
+#: core/models.py:38
+msgid "Parent"
+msgstr ""
+
+#: core/models.py:41 core/templates/core/card_folder.inc.html:6
+#: core/templates/core/detail_image.html:16
+#: core/templates/core/detail_text.html:16
+msgid "Public"
+msgstr "Öffentlich"
+
+#: core/models.py:42 core/models.py:84 core/templates/core/detail_image.html:17
+#: core/templates/core/detail_text.html:17
+msgid "Created"
+msgstr "Erstellt"
+
+#: core/models.py:62 core/templates/core/folder.html:16
+#: core/templates/core/index.html:15 core/templates/core/public_folders.html:15
+msgid "Folders"
+msgstr "Ordner"
+
+#: core/models.py:69 core/templates/core/nav.inc.html:15
+msgid "Whiteboard"
+msgstr ""
+
+#: core/models.py:70
+msgid "Chemical Drawing"
+msgstr "Chemische Zeichnung"
+
+#: core/models.py:71
+msgid "Text Document"
+msgstr "Text Dokument"
+
+#: core/models.py:73 core/models.py:124
+msgid "Name"
+msgstr "Name"
+
+#: core/models.py:74
+msgid "Type"
+msgstr "Typ"
+
+#: core/models.py:75 core/models.py:129
+msgid "Content"
+msgstr "Inhalt"
+
+#: core/models.py:86
+msgid "Thumbnail"
+msgstr "Vorschau"
+
+#: core/models.py:91
+msgid "PDF"
+msgstr ""
+
+#: core/models.py:118 core/models.py:126 core/models.py:146
+#: core/templates/core/card_file.inc.html:2
+#: core/templates/core/detail_image.html:7
+#: core/templates/core/detail_text.html:7
+msgid "File"
+msgstr "Datei"
+
+#: core/models.py:119 core/templates/core/folder.html:22
+#: core/templates/core/index.html:21
+msgid "Files"
+msgstr "Dateien"
+
+#: core/models.py:139
+msgid "Molecule"
+msgstr "Molekül"
+
+#: core/models.py:140 core/templates/core/nav.inc.html:23
+msgid "Molecules"
+msgstr "Moleküle"
+
+#: core/models.py:151
+msgid "Valid until"
+msgstr "Gültig bis"
+
+#: core/models.py:160
+msgid "File Share"
+msgstr "Dateifreigabe"
+
+#: core/models.py:161
+msgid "File Shares"
+msgstr "Dateifreigaben"
+
+#: core/templates/core/base.html:3
+msgid "Guest"
+msgstr "Gast"
+
+#: core/templates/core/base.html:40
+msgid "Public Folders"
+msgstr "Öffentliche Ordner"
+
+#: core/templates/core/base.html:48
+msgid "Logout"
+msgstr "Abmelden"
+
+#: core/templates/core/breadcrumbs.inc.html:4
+msgid "Home"
+msgstr "Startseite"
+
+#: core/templates/core/card_file.inc.html:29
+msgid "Download as PDF"
+msgstr "Download als PDF"
+
+#: core/templates/core/card_file.inc.html:32
+msgid "Download as HTML"
+msgstr "Download als HTML"
+
+#: core/templates/core/card_file.inc.html:36
+msgid "Download as PNG Image"
+msgstr "Download als PNG-Bild"
+
+#: core/templates/core/card_file.inc.html:40
+msgid "Export molecules (SDF)"
+msgstr "Moleküle als SDF exportieren"
+
+#: core/templates/core/card_folder.inc.html:6
+msgid "Private"
+msgstr "Privat"
+
+#: core/templates/core/card_folder.inc.html:24
+msgid "make private"
+msgstr "Privat schalten"
+
+#: core/templates/core/card_folder.inc.html:29
+msgid "make public"
+msgstr "Veröffentlichen"
+
+#: core/templates/core/detail_image.html:24
+#: core/templates/core/detail_text.html:24
+msgid "Downloads"
+msgstr ""
+
+#: core/templates/core/detail_image.html:27
+msgid "As Image (.png)"
+msgstr "Als Bild (.png)"
+
+#: core/templates/core/detail_image.html:31
+msgid "As Structure Data File (.sdf)"
+msgstr "Als Struktur-Datei (.sdf)"
+
+#: core/templates/core/detail_image.html:35
+msgid "As MDL-Molfile (.mol)"
+msgstr "Als MDL-Datei (.mol)"
+
+#: core/templates/core/detail_image.html:41
+#: core/templates/core/detail_text.html:34
+msgid "Direct Share"
+msgstr "Direktlink"
+
+#: core/templates/core/detail_image.html:53
+#: core/templates/core/detail_text.html:46
+msgid "Remove share"
+msgstr "Freigabe aufheben"
+
+#: core/templates/core/detail_image.html:53
+#: core/templates/core/detail_text.html:46
+msgid "Share"
+msgstr "Freigabe"
+
+#: core/templates/core/detail_image.html:62
+#: core/templates/core/detail_text.html:55 core/templates/core/folder.html:54
+#: core/templates/core/molecules.html:14 core/templates/core/text.html:10
+#: core/templates/core/whiteboard.html:9
+msgid "Back"
+msgstr "Zurück"
+
+#: core/templates/core/detail_text.html:27
+msgid "As PDF (.pdf)"
+msgstr "Als PDF (.pdf)"
+
+#: core/templates/core/detail_text.html:30
+msgid "As HTML (.html)"
+msgstr "Als HTML (.html)"
+
+#: core/templates/core/folder.html:46
+msgid "Quick Link"
+msgstr "Direktlink"
+
+#: core/templates/core/molecules.html:20
+msgid "Save to Server"
+msgstr "Auf Server speichern"
+
+#: core/templates/core/nav.inc.html:7
+msgid "Add Folder"
+msgstr "Ordner anlegen"
+
+#: core/templates/core/nav.inc.html:31
+msgid "Texteditor"
+msgstr ""
+
+#: core/templates/core/nav.inc.html:40
+msgid "Backend"
+msgstr ""
+
+#: core/templates/core/start.html:7
+msgid "Online Teaching Tools"
+msgstr "Online Tools zum Lehren"
+
+#: core/templates/core/start.html:10
+msgid ""
+"Login to use the complete toolbox. Currently you have a Whiteboard, a "
+"Molecule Drawer and an enhanced Texteditor.<br>\n"
+"    \t\t\tWithout login you can only browse public folders."
+msgstr ""
+"Melden Sie sich an, um die Tools zu verwenden. Im Moment gibt es ein "
+"Whiteboard, ein Molekülzeichner und einen erweiterten Texteditor.<br>"
+"Ohne Anmeldung können Sie nur die öffentlichen Ordner ansehen."
+
+#: core/templates/core/start.html:14
+msgid "Sign in"
+msgstr "Anmelden"
+
+#: core/templates/core/start.html:34
+msgid "Send"
+msgstr "Senden"
+
+#: core/templates/core/success.html:8
+msgid "Logout successfull."
+msgstr "Erfolgreich abgemeldet."
+
+#: core/templates/core/success.html:9
+msgid "Login again"
+msgstr "Neu anmelden"
+
+#: core/templates/core/text.html:13 core/templates/core/text.html:18
+msgid "No Name"
+msgstr "Unbennant"
+
+#: core/templates/core/text.html:39
+msgid "Note: Saving will close the editor!"
+msgstr "Hinweis: Nach dem Speichern schließt sich der Editor!"
+
+#: core/templates/core/whiteboard.html:20
+msgid "Note: The Whiteboard will close on save!"
+msgstr "Hinweis: Nach dem Speichern schließt sich das Whiteboard."
+
+#: core/views.py:49
+msgid "Login successfull"
+msgstr "Anmeldung erfolgreich."
+
+#: core/views.py:51
+msgid "Wrong credentials"
+msgstr "Falsche Anmeldedaten"
+
+#: core/views.py:53
+msgid "Please fill the form"
+msgstr "Bitte füllen Sie das Formular aus"
+
+#: core/views.py:137
+msgid "Aborted"
+msgstr "Abgebrochen"

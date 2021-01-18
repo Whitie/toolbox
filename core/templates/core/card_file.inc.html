@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="card-footer">
-        {% if file.type == 'text' %}
+        {% if item.type == 'text' %}
         <a href="{% url 'core:download' item.id 'pdf' %}" class="card-footer-item has-tooltip-arrow" data-tooltip="{% translate 'Download as PDF' %}">
             <i class="las la-file-pdf la-lg"></i>
         </a>

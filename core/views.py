@@ -8,15 +8,16 @@ from django.contrib.auth import (
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext as _
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from . import forms, utils
-from .models import File, FileShare, Folder, Molecule
+from .models import CKUploadImage, File, FileShare, Folder, Molecule
 
 
 def index(req):
@@ -65,10 +66,7 @@ def success(req):
 @require_POST
 def add_folder(req):
     form = forms.NewFolderForm(req.POST)
-    try:
-        folder = Folder.objects.get(pk=req.session.get('folder'))
-    except Folder.DoesNotExist:
-        folder = None
+    folder = utils.get_folder(req)
     if form.is_valid():
         folder = Folder(owner=req.user, parent=folder, **form.cleaned_data)
         folder.save()
@@ -91,9 +89,7 @@ def folder(req, folder_id):
 
 @login_required
 def whiteboard(req):
-    folder = req.session.get('folder', None)
-    if folder:
-        folder = Folder.objects.get(pk=folder)
+    folder = utils.get_folder(req)
     return render(req, 'core/whiteboard.html', {'folder': folder})
 
 
@@ -101,10 +97,7 @@ def whiteboard(req):
 @require_POST
 def save_whiteboard(req):
     form = forms.NewFileForm(req.POST, req.FILES)
-    try:
-        folder = Folder.objects.get(pk=req.session.get('folder'))
-    except Folder.DoesNotExist:
-        folder = None
+    folder = utils.get_folder(req)
     if form.is_valid():
         file = File(owner=req.user, type='whiteboard', folder=folder,
                     **form.cleaned_data)
@@ -115,9 +108,7 @@ def save_whiteboard(req):
 
 @login_required
 def molecules(req):
-    folder = req.session.get('folder', None)
-    if folder:
-        folder = Folder.objects.get(pk=folder)
+    folder = utils.get_folder(req)
     return render(req, 'core/molecules.html', {'folder': folder})
 
 
@@ -125,9 +116,7 @@ def molecules(req):
 @require_POST
 def save_molecules(req):
     data = json.loads(req.body)
-    folder = req.session.get('folder', None)
-    if folder:
-        folder = Folder.objects.get(pk=folder)
+    folder = utils.get_folder(req)
     image_data = data['image'].split(',', 1)[1]
     filename = get_valid_filename(f'{data["name"]}.png')
     png = ContentFile(base64.b64decode(image_data))
@@ -231,3 +220,44 @@ def change_folder_state(req, folder_id, new_state):
         folder.public = False
     folder.save()
     return HttpResponse('ok')
+
+
+@login_required
+def text(req):
+    folder = utils.get_folder(req)
+    if req.method == 'POST':
+        form = forms.EditorForm(req.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            name = get_valid_filename(cd['name'])
+            html = utils.HTML_SKELETON.format(title=cd['name'],
+                                              body=cd['editor'])
+            content = ContentFile(html.encode('utf-8'), f'{name}.html')
+            file = File(owner=req.user, type='text', name=cd['name'],
+                        folder=folder, content=content)
+            file.save()
+            if folder:
+                return redirect('core:folder', folder_id=folder.id)
+            return redirect('core:index')
+    ctx = dict(folder=folder)
+    return render(req, 'core/text.html', ctx)
+
+
+@require_POST
+@csrf_exempt
+def ck_upload_image(req):
+    ck = CKUploadImage(owner=req.user)
+    form = forms.CKUploadImageForm(req.POST, req.FILES, instance=ck)
+    if form.is_valid():
+        form.save()
+        data = {
+            'fileName': ck.upload.name.split('/')[-1],
+            'uploaded': 1,
+            'url': req.build_absolute_uri(ck.upload.url),
+        }
+        return JsonResponse(data)
+    data = {
+        'uploaded': 0,
+        'error': {'message': ' '.join(form.errors)}
+    }
+    return JsonResponse(data)

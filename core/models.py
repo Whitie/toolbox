@@ -160,3 +160,12 @@ class FileShare(models.Model):
         verbose_name = _('File Share')
         verbose_name_plural = _('File Shares')
         ordering = ['file', '-created']
+
+
+class CKUploadImage(models.Model):
+    upload = models.FileField(
+        upload_to=partial(user_directory_path, subpath='ck_images')
+    )
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name=_('Owner')
+    )
