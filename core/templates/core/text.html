@@ -27,7 +27,7 @@
     <script type="text/javascript" src="{% static 'ext/ckeditor/ckeditor.js' %}"></script>
     <script>
         CKEDITOR.replace('editor', {
-            extraPlugins: 'autogrow,uploadimage',
+            extraPlugins: 'autogrow,uploadimage,kekule',
             autoGrow_minHeight: 600,
             autoGrow_onStartup: true,
             uploadUrl: '{% url "core:ck_upload_image" %}'
