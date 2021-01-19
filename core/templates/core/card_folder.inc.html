@@ -15,20 +15,17 @@
     </div>
     <div class="card-footer">
         {% if user == item.owner %}
-        <a href="#" class="card-footer-item" id="folder_{{ item.id }}" onclick="change_state('{{ item.id }}');" data-url="{% url 'core:change_folder_state' item.id item.public|yesno:"private,public" %}">
-            <div class="icon-text">
-                {% if item.public %}
-                <span class="icon">
-                    <i class="las la-user-lock"></i>
-                </span>
-                <span>{% translate 'make private' %}</span>
-                {% else %}
-                <span class="icon">
-                    <i class="las la-globe"></i>
-                </span>
-                <span>{% translate 'make public' %}</span>
-                {% endif %}
-            </div>
+        <a href="#" class="card-footer-item has-tooltip-arrow" id="folder_{{ item.id }}" onclick="change_state('{{ item.id }}');"
+         data-url="{% url 'core:change_folder_state' item.id item.public|yesno:"private,public" %}"
+         data-tooltip="{% if item.public %}{% translate 'make private' %}{% else %}{% translate 'make public' %}{% endif %}">
+            {% if item.public %}
+            <i class="las la-user-lock"></i>
+            {% else %}
+            <i class="las la-globe"></i>
+            {% endif %}
+        </a>
+        <a href="#" onclick="delete_item('{% url 'core:delete_folder' item.id %}');" class="card-footer-item has-text-danger has-tooltip-arrow has-tooltip-danger" data-tooltip="{% translate 'Delete Folder' %}">
+            <i class="las la-trash la-lg"></i>
         </a>
         {% else %}
         <a href="#" class="card-footer-item">

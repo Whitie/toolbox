@@ -1,3 +1,4 @@
+import io
 import json
 
 from django.contrib import messages
@@ -7,7 +8,9 @@ from django.contrib.auth import (
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import (
+    FileResponse, HttpResponse, HttpResponseForbidden, JsonResponse
+)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.text import get_valid_filename
@@ -78,7 +81,7 @@ def folder(req, folder_id):
     folder = Folder.objects.select_related().get(pk=folder_id)
     req.session['folder'] = folder.id
     if not utils.is_owner_or_public(req.user, folder=folder):
-        return HttpResponseForbidden()
+        raise HttpResponseForbidden
     query = Q(public=True)
     if req.user.is_authenticated:
         query |= Q(owner=req.user)
@@ -154,7 +157,7 @@ def rename(req, what):
 def detail(req, file_id, shared=False):
     file = File.objects.select_related().get(pk=file_id)
     if not shared and not utils.is_owner_or_public(req.user, file=file):
-        return HttpResponseForbidden()
+        raise HttpResponseForbidden
     if req.method == 'POST':
         action = req.POST.get('share')
         utils.manage_share(file, action)
@@ -175,20 +178,21 @@ def shared_file(req, hash):
 def download(req, file_id, filetype):
     file = File.objects.select_related().get(pk=file_id)
     if not utils.is_owner_or_public(req.user, file=file):
-        return HttpResponseForbidden()
+        raise HttpResponseForbidden
     name = get_valid_filename(file.name)
     if filetype == 'pdf':
-        content = file.pdf.read()
+        content = file.pdf
         mimetype, ext = 'application/pdf', '.pdf'
     elif filetype in ('html', 'png'):
-        content = file.content.read()
+        content = file.content
         mimetype, ext = file.mimetype
     elif filetype == 'sdf':
         mimetype, ext, content = file.get_sdf()
+        content = io.BytesIO(content.encode('utf-8'))
     else:
-        return HttpResponseForbidden()
-    response = HttpResponse(content, content_type=mimetype)
-    response['Content-Disposition'] = f'attachment; filename={name}{ext}'
+        raise HttpResponseForbidden
+    response = FileResponse(content, as_attachment=True,
+                            filename=f'{name}{ext}', content_type=mimetype)
     return response
 
 
@@ -199,8 +203,9 @@ def download_mol(req, mol_id):
     else:
         name = f'molecule_{mol_id:04d}'
     mimetype, ext = mol.mimetype
-    response = HttpResponse(mol.content, content_type=mimetype)
-    response['Content-Disposition'] = f'attachment; filename={name}{ext}'
+    content = io.BytesIO(mol.content.encode('utf-8'))
+    response = FileResponse(content, as_attachment=True,
+                            filename=f'{name}{ext}', content_type=mimetype)
     return response
 
 
@@ -223,7 +228,7 @@ def shared_file_qrcode(req, share_id):
 def change_folder_state(req, folder_id, new_state):
     folder = Folder.objects.get(pk=folder_id)
     if folder.owner != req.user:
-        return HttpResponseForbidden()
+        raise HttpResponseForbidden
     if new_state == 'public':
         folder.public = True
     else:
@@ -271,3 +276,25 @@ def ck_upload_image(req):
         'error': {'message': ' '.join(form.errors)}
     }
     return JsonResponse(data)
+
+
+def delete_file(req, file_id):
+    file = get_object_or_404(File, pk=file_id)
+    if file.owner != req.user:
+        raise HttpResponseForbidden
+    if file.has_molecules():
+        file.molecules.all().delete()
+    file.delete()
+    return HttpResponse('ok')
+
+
+def delete_folder(req, folder_id):
+    folder = get_object_or_404(Folder, pk=folder_id)
+    if folder.owner != req.user:
+        raise HttpResponseForbidden
+    for sub in folder.subfolders.all():
+        sub.files.all().delete()
+    folder.subfolders.all().delete()
+    folder.files.all().delete()
+    folder.delete()
+    return HttpResponse('ok')

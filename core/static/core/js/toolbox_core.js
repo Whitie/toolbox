@@ -133,6 +133,12 @@ function save_molecules(molecules, image_data) {
     });
 }
 
+function delete_item(url) {
+    $.get(url).done(function() {
+        window.location.reload();
+    })
+}
+
 $(document).ready(function() {
     $('.navbar-burger').click(function() {
         $('.navbar-burger').toggleClass('is-active');

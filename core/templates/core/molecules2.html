@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}{% load i18n static %}
 
 {% block header %}
-<link rel="stylesheet" href="{% static 'ext/kekule/kekule.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'ext/kekule/themes/default/kekule.css' %}" type="text/css">
 {% endblock %}
 
 {% block nav_start %}{% include 'core/nav.inc.html' %}{% endblock %}
@@ -22,18 +22,24 @@
 </section>
 <section class="section">
     <div class="container">
-        <div id="kekule"></div>
+        <div id="kekule-composer"></div>
     </div>
 </section>
 {% endblock %}
 {% block script %}
 <script type="text/javascript" src="{% static 'ext/kekule/kekule.min.js' %}"></script>
 <script>
+    var composer;
+
     function export_to_mol(molecule) {
         return Kekule.IO.saveFormatData(molecule, 'mol');
     }
-    var composer = new Kekule.Editor.Composer(document.getElementById('kekule'));
-    composer.setDimension('1300px', '800px');
+    function init() {
+        composer = new Kekule.Editor.Composer(document.getElementById('kekule-composer'));
+        composer.setDimension('1300px', '800px');
+        composer.getRenderConfigs().getColorConfigs().setUseAtomSpecifiedColor(true);
+    }
+    Kekule.X.domReady(init)
     $('html, body').animate({scrollTop: $(document).height()}, 5000);
     $('#save-molecules').click(function() {
         var image_data = composer.getEditor().exportToDataUri();

@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
-"Report-Msgid-Bugs-To: https://github.com/Whitie/toolbox/issues\n"
-"POT-Creation-Date: 2021-01-18 15:08+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-01-19 08:18+0100\n"
 "PO-Revision-Date: 2021-01-18 15:08+0100\n"
 "Last-Translator: Thorsten Weimann <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: core/forms.py:13
 msgid "Username"
 msgstr "Benutzername"
@@ -153,17 +154,25 @@ msgstr "Download als PNG-Bild"
 msgid "Export molecules (SDF)"
 msgstr "Moleküle als SDF exportieren"
 
+#: core/templates/core/card_file.inc.html:45
+msgid "Delete File"
+msgstr "Datei löschen"
+
 #: core/templates/core/card_folder.inc.html:6
 msgid "Private"
 msgstr "Privat"
 
-#: core/templates/core/card_folder.inc.html:24
+#: core/templates/core/card_folder.inc.html:20
 msgid "make private"
 msgstr "Privat schalten"
 
-#: core/templates/core/card_folder.inc.html:29
+#: core/templates/core/card_folder.inc.html:20
 msgid "make public"
 msgstr "Veröffentlichen"
+
+#: core/templates/core/card_folder.inc.html:27
+msgid "Delete Folder"
+msgstr "Ordner löschen"
 
 #: core/templates/core/detail_image.html:24
 #: core/templates/core/detail_text.html:24
@@ -198,9 +207,9 @@ msgid "Share"
 msgstr "Freigabe"
 
 #: core/templates/core/detail_image.html:62
-#: core/templates/core/detail_text.html:55 core/templates/core/folder.html:54
-#: core/templates/core/molecules.html:14 core/templates/core/text.html:10
-#: core/templates/core/whiteboard.html:9
+#: core/templates/core/detail_text.html:55 core/templates/core/folder.html:62
+#: core/templates/core/molecules.html:14 core/templates/core/molecules2.html:13
+#: core/templates/core/text.html:10 core/templates/core/whiteboard.html:9
 msgid "Back"
 msgstr "Zurück"
 
@@ -212,11 +221,19 @@ msgstr "Als PDF (.pdf)"
 msgid "As HTML (.html)"
 msgstr "Als HTML (.html)"
 
-#: core/templates/core/folder.html:46
+#: core/templates/core/folder.html:34 core/templates/core/index.html:33
+msgid "No Folders"
+msgstr "Keine Ordner vorhanden"
+
+#: core/templates/core/folder.html:45 core/templates/core/index.html:44
+msgid "No Files"
+msgstr "Keine Dateien vorhanden"
+
+#: core/templates/core/folder.html:54
 msgid "Quick Link"
 msgstr "Direktlink"
 
-#: core/templates/core/molecules.html:20
+#: core/templates/core/molecules.html:20 core/templates/core/molecules2.html:19
 msgid "Save to Server"
 msgstr "Auf Server speichern"
 
@@ -243,8 +260,8 @@ msgid ""
 "    \t\t\tWithout login you can only browse public folders."
 msgstr ""
 "Melden Sie sich an, um die Tools zu verwenden. Im Moment gibt es ein "
-"Whiteboard, ein Molekülzeichner und einen erweiterten Texteditor.<br>"
-"Ohne Anmeldung können Sie nur die öffentlichen Ordner ansehen."
+"Whiteboard, ein Molekülzeichner und einen erweiterten Texteditor.<br>Ohne "
+"Anmeldung können Sie nur die öffentlichen Ordner ansehen."
 
 #: core/templates/core/start.html:14
 msgid "Sign in"
@@ -274,18 +291,18 @@ msgstr "Hinweis: Nach dem Speichern schließt sich der Editor!"
 msgid "Note: The Whiteboard will close on save!"
 msgstr "Hinweis: Nach dem Speichern schließt sich das Whiteboard."
 
-#: core/views.py:49
+#: core/views.py:52
 msgid "Login successfull"
 msgstr "Anmeldung erfolgreich."
 
-#: core/views.py:51
+#: core/views.py:54
 msgid "Wrong credentials"
 msgstr "Falsche Anmeldedaten"
 
-#: core/views.py:53
+#: core/views.py:56
 msgid "Please fill the form"
 msgstr "Bitte füllen Sie das Formular aus"
 
-#: core/views.py:137
+#: core/views.py:150
 msgid "Aborted"
 msgstr "Abgebrochen"

@@ -41,5 +41,10 @@
             <i class="las la-file-export la-lg"></i>
         </a>
         {% endif %}{% endif %}
+        {% if item.owner == user %}
+        <a href="#" onclick="delete_item('{% url 'core:delete_file' item.id %}');" class="card-footer-item has-text-danger has-tooltip-arrow has-tooltip-danger" data-tooltip="{% translate 'Delete File' %}">
+            <i class="las la-trash la-lg"></i>
+        </a>
+        {% endif %}
     </div>
 </div>
