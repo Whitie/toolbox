@@ -127,6 +127,7 @@ dmypy.json
 
 # Own stuff
 cp_static/*
+*.secret
 */.secret
 uploads/*
 cache/*

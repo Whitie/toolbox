@@ -10,9 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import ldap
+import os
+
 from pathlib import Path
 
 from django.contrib.messages import constants as messages
+from django.utils.translation import ugettext_lazy as _
+from django_auth_ldap.config import LDAPSearch
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '^=(e(oo6lw$$6+cc2c#3lp-s_axq05-g!+8i_es@_o-g7v#4@u'
+# SECRET_KEY = '^=(e(oo6lw$$6+cc2c#3lp-s_axq05-g!+8i_es@_o-g7v#4@u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -52,6 +57,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'toolbox.urls'
@@ -86,22 +96,25 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+                'UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+                'MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+                'CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+                'NumericPasswordValidator',
     },
 ]
 
@@ -110,6 +123,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'de-de'
+
+LANGUAGES = [
+    ('de', _('German')),
+    ('en', _('English')),
+]
 
 TIME_ZONE = 'Europe/Berlin'
 
@@ -139,3 +157,42 @@ Q_CLUSTER = {
     # for testing only
     'sync': False,
 }
+
+# LDAP
+AUTH_LDAP_SERVER_URI = 'ldap://10.0.0.10'
+AUTH_LDAP_CONNECTION_OPTIONS = {
+    ldap.OPT_REFERRALS: 0,
+}
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    'dc=bbzchemie,dc=local', ldap.SCOPE_SUBTREE,
+    'sAMAccountName=%(user)s'
+)
+AUTH_LDAP_USER_ATTR_MAP = {
+    'username': 'sAMAccountName',
+    'first_name': 'givenName',
+    'last_name': 'sn',
+    'email': 'mail',
+}
+
+# Secret key handling
+SECRET_FILE = BASE_DIR / '.secret'
+
+
+def get_secret_key(secret_file):
+    try:
+        with secret_file.open('rb') as fp:
+            return fp.read()
+    except FileNotFoundError:
+        secret_key = os.urandom(40)
+        with secret_file.open('wb') as fp:
+            fp.write(secret_key)
+        return secret_key
+
+
+SECRET_KEY = get_secret_key(SECRET_FILE)
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
+
