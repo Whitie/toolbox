@@ -8,3 +8,5 @@ Currently available:
 - Chem Sketcher
 - Texteditor
 
+All created content can be saved and managed online.
+
