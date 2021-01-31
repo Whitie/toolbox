@@ -192,7 +192,6 @@ def get_secret_key(secret_file):
 SECRET_KEY = get_secret_key(SECRET_FILE)
 
 try:
-    from .local_settings import *
+    from .local_settings import *  # noqa: F403, F401
 except ImportError:
     pass
-
