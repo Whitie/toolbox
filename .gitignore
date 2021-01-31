@@ -131,3 +131,6 @@ cp_static/*
 */.secret
 uploads/*
 cache/*
+
+# VS Code settings
+.vscode
