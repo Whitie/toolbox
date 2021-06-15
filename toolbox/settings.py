@@ -100,7 +100,7 @@ DATABASES = {
     }
 }
 
-DEFAULT_AUTOFIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -159,6 +159,7 @@ Q_CLUSTER = {
     'name': 'toolbox',
     'workers': 2,
     'timeout': 120,
+    'retry': 150,
     'orm': 'default',
     # for testing only
     'sync': False,
